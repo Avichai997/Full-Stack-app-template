@@ -1,5 +1,5 @@
 {
-  "name": "playbook-client",
+  "name": "frontend-client",
   "private": true,
   "version": "1.0.0",
   "type": "module",

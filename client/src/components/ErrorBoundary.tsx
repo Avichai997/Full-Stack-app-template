@@ -34,7 +34,7 @@ export class ErrorBoundary extends Component<IErrorBoundaryProps, IErrorBoundary
   };
 
   handleGoHome = () => {
-    window.location.href = APP_ROUTES.PLAYBOOKS_EDITOR;
+    window.location.href = APP_ROUTES.DASHBOARD;
   };
 
   render() {
@@ -67,7 +67,7 @@ export const ErrorFallbackUI = ({ error, onReset, onGoHome }: IErrorFallbackProp
     if (onGoHome) {
       onGoHome();
     } else {
-      window.location.href = APP_ROUTES.PLAYBOOKS_EDITOR;
+      window.location.href = APP_ROUTES.DASHBOARD;
     }
     onReset?.();
   };
@@ -155,7 +155,7 @@ export const RouteErrorElement = () => {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
-    navigate(APP_ROUTES.PLAYBOOKS_EDITOR);
+    navigate(APP_ROUTES.DASHBOARD);
   };
 
   return <ErrorFallbackUI error={error} onGoHome={handleGoHome} />;

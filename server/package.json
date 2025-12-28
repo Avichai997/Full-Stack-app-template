@@ -1,7 +1,7 @@
 {
-  "name": "playbook-server",
+  "name": "backend-server",
   "version": "1.0.0",
-  "description": "Security Playbook Builder Backend",
+  "description": "NestJS Backend with Authentication",
   "author": "",
   "private": true,
   "license": "UNLICENSED",

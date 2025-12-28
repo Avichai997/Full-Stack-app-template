@@ -40,30 +40,12 @@ export const Layout = ({ children }: ILayoutProps) => {
               <Typography
                 variant='h6'
                 component={Link}
-                to={APP_ROUTES.PLAYBOOKS_EDITOR}
+                to={APP_ROUTES.DASHBOARD}
                 className='font-bold text-white no-underline'
                 sx={{ textDecoration: 'none', color: 'white' }}
               >
-                Security Playbook Builder
+                App Dashboard
               </Typography>
-              <Box className='flex gap-2'>
-                <Button
-                  color='inherit'
-                  component={Link}
-                  to={APP_ROUTES.PLAYBOOKS_EDITOR}
-                  className='text-white'
-                >
-                  Playbooks Editor
-                </Button>
-                <Button
-                  color='inherit'
-                  component={Link}
-                  to={APP_ROUTES.SIMULATE}
-                  className='text-white'
-                >
-                  Simulate
-                </Button>
-              </Box>
             </Box>
             <Box className='flex items-center gap-2'>
               <Typography variant='body2' className='text-white'>

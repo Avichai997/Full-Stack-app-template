@@ -6,6 +6,7 @@ import { doubleCsrf } from 'csrf-csrf';
 
 import { AppModule } from '@/app.module';
 import { HttpExceptionFilter } from '@/common';
+import { config } from '@/config';
 import { setupSwagger } from '@/utils';
 
 async function bootstrap() {
@@ -28,12 +29,12 @@ async function bootstrap() {
   app.use(cookieParser());
 
   const { doubleCsrfProtection } = doubleCsrf({
-    getSecret: () => process.env.JWT_SECRET,
+    getSecret: () => config.jwt.secret,
     getSessionIdentifier: (req) => req.ip || 'default',
     cookieName: '_csrf',
     cookieOptions: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: config.server.nodeEnv === 'production',
       sameSite: 'strict',
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
@@ -56,7 +57,7 @@ async function bootstrap() {
 
   // CORS configuration
   app.enableCors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: config.cors.clientUrl,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
@@ -79,7 +80,7 @@ async function bootstrap() {
 
   setupSwagger(app);
 
-  const port = process.env.SERVER_PORT || 3001;
+  const port = config.server.port;
   await app.listen(port);
   console.log(`Server is running on: http://localhost:${port}`);
   console.log(`Swagger documentation available at: http://localhost:${port}/api/docs`);

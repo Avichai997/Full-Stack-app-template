@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import { ProtectedRoute, RouteErrorElement } from '@/components';
 import { APP_ROUTES } from '@/constants/routes';
-import { AuthPage, DashboardPage, SimulatePage } from '@/pages';
+import { AuthPage, DashboardPage } from '@/pages';
 
 export const router = createBrowserRouter([
   {
@@ -19,41 +19,23 @@ export const router = createBrowserRouter([
     path: APP_ROUTES.HOME,
     element: (
       <ProtectedRoute>
-        <Navigate to={APP_ROUTES.PLAYBOOKS_EDITOR} replace />
+        <Navigate to={APP_ROUTES.DASHBOARD} replace />
       </ProtectedRoute>
     ),
     errorElement: <RouteErrorElement />,
   },
   {
-    path: APP_ROUTES.PLAYBOOKS_EDITOR,
+    path: APP_ROUTES.DASHBOARD,
     element: (
       <ProtectedRoute>
         <DashboardPage />
-      </ProtectedRoute>
-    ),
-    errorElement: <RouteErrorElement />,
-  },
-  {
-    path: `${APP_ROUTES.PLAYBOOKS_EDITOR}/:playbookId`,
-    element: (
-      <ProtectedRoute>
-        <DashboardPage />
-      </ProtectedRoute>
-    ),
-    errorElement: <RouteErrorElement />,
-  },
-  {
-    path: APP_ROUTES.SIMULATE,
-    element: (
-      <ProtectedRoute>
-        <SimulatePage />
       </ProtectedRoute>
     ),
     errorElement: <RouteErrorElement />,
   },
   {
     path: '*',
-    element: <Navigate to={APP_ROUTES.PLAYBOOKS_EDITOR} replace />,
+    element: <Navigate to={APP_ROUTES.DASHBOARD} replace />,
     errorElement: <RouteErrorElement />,
   },
 ]);

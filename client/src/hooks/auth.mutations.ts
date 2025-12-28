@@ -16,7 +16,7 @@ export const useLoginMutation = () => {
     onSuccess: (data) => {
       setUser(data.user);
       queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
-      navigate(APP_ROUTES.PLAYBOOKS_EDITOR);
+      navigate(APP_ROUTES.DASHBOARD);
     },
   });
 };
@@ -36,7 +36,7 @@ export const useRegisterMutation = () => {
         });
         setUser(loginData.user);
         queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
-        navigate(APP_ROUTES.PLAYBOOKS_EDITOR);
+        navigate(APP_ROUTES.DASHBOARD);
       } catch (error) {
         navigate(APP_ROUTES.LOGIN);
         const loginError =

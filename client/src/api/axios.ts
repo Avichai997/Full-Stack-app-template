@@ -1,9 +1,10 @@
 import axios from 'axios';
 
+import { config } from '@/config';
 import { APP_ROUTES } from '@/constants/routes';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
+  baseURL: config.api.baseURL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

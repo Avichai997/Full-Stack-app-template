@@ -3,8 +3,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
-    .setTitle('Security Playbook Builder API')
-    .setDescription('API documentation for the Security Playbook Builder application')
+    .setTitle('Full-Stack App API')
+    .setDescription('API documentation for the Full-Stack application')
     .setVersion('1.0')
     .addBearerAuth(
       {
@@ -25,7 +25,7 @@ export function setupSwagger(app: INestApplication): void {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document, {
-    customSiteTitle: 'Playbook Builder API Docs',
+    customSiteTitle: 'API Documentation',
     customCss: '.swagger-ui .topbar { display: none }',
   });
 }
