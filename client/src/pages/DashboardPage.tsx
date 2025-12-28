@@ -1,124 +1,40 @@
-import { Box, Typography } from '@mui/material';
-import { useFormik } from 'formik';
-import { useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 
-import { Layout, PlaybookForm, PlaybookList } from '@/components';
-import { APP_ROUTES } from '@/constants/routes';
-import {
-  usePlaybooks,
-  useCreatePlaybookMutation,
-  useDeletePlaybookMutation,
-  useUpdatePlaybookMutation,
-} from '@/hooks';
-import { Action, IPlaybook, Trigger } from '@/types';
-
-interface IFormValues {
-  name: string;
-  trigger: Trigger;
-  actions: Action[];
-}
+import { Layout } from '@/components';
+import { useAuthStore } from '@/store';
 
 export const DashboardPage = () => {
-  const { playbookId } = useParams<{ playbookId?: string }>();
-  const navigate = useNavigate();
-
-  const { data: playbooks = [], isLoading } = usePlaybooks();
-  const createMutation = useCreatePlaybookMutation();
-  const updateMutation = useUpdatePlaybookMutation();
-  const deleteMutation = useDeletePlaybookMutation();
-
-  const editingPlaybook = useMemo<IPlaybook | null>(
-    () => (playbookId ? (playbooks.find((p) => p.id === playbookId) ?? null) : null),
-    [playbookId, playbooks],
-  );
-
-  const initialValues = useMemo(
-    () => ({
-      name: editingPlaybook?.name || '',
-      trigger: editingPlaybook?.trigger || Trigger.MalwareDetected,
-      actions: editingPlaybook?.actions || [],
-    }),
-    [editingPlaybook],
-  );
-
-  const formik = useFormik<IFormValues>({
-    initialValues,
-    validate: (values) => {
-      const errors: Partial<Record<keyof IFormValues, string>> = {};
-      if (!values.name) {
-        errors.name = 'Name is required';
-      }
-      if (values.actions.length === 0) {
-        errors.actions = 'At least one action is required';
-      }
-      return errors;
-    },
-    onSubmit: (values) => {
-      if (editingPlaybook) {
-        updateMutation.mutate({
-          id: editingPlaybook.id,
-          data: values,
-        });
-      } else {
-        createMutation.mutate(values, {
-          onSuccess: () => {
-            formik.resetForm();
-          },
-        });
-      }
-    },
-    enableReinitialize: true,
-  });
-
-  const handleEdit = (playbook: { id: string }) => {
-    navigate(APP_ROUTES.PLAYBOOKS_EDITOR_EDIT(playbook.id));
-  };
-
-  const handleCancelEdit = () => {
-    navigate(APP_ROUTES.PLAYBOOKS_EDITOR);
-  };
-
-  const handleDelete = (deletedPlaybookId: string) => {
-    deleteMutation.mutate(deletedPlaybookId, {
-      onSuccess: () => {
-        if (deletedPlaybookId === playbookId) {
-          navigate(APP_ROUTES.PLAYBOOKS_EDITOR);
-        }
-      },
-    });
-  };
-
-  const isSaveDisabled =
-    (editingPlaybook ? updateMutation.isPending : createMutation.isPending) ||
-    !formik.isValid ||
-    (editingPlaybook ? !formik.dirty : false);
+  const { user } = useAuthStore();
 
   return (
     <Layout>
       <Typography variant='h4' component='h1' className='mb-6 font-bold'>
-        {editingPlaybook ? 'Edit Playbook' : 'Create Playbook'}
+        Dashboard
       </Typography>
 
-      <Box className='flex flex-col gap-6 md:flex-row'>
-        <Box className='flex-1'>
-          <PlaybookForm
-            formik={formik}
-            editingPlaybook={editingPlaybook}
-            onCancel={handleCancelEdit}
-            isSaveDisabled={isSaveDisabled}
-          />
-        </Box>
+      <Box className='grid gap-6 md:grid-cols-2'>
+        <Card className='shadow-md'>
+          <CardContent className='p-6'>
+            <Typography variant='h6' className='mb-2 font-semibold'>
+              Welcome!
+            </Typography>
+            <Typography variant='body1' className='text-gray-600'>
+              You are logged in as: <strong>{user?.email}</strong>
+            </Typography>
+          </CardContent>
+        </Card>
 
-        <Box className='flex-1'>
-          <PlaybookList
-            playbooks={playbooks}
-            isLoading={isLoading}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            isDisabled={deleteMutation.isPending || updateMutation.isPending}
-          />
-        </Box>
+        <Card className='shadow-md'>
+          <CardContent className='p-6'>
+            <Typography variant='h6' className='mb-2 font-semibold'>
+              Getting Started
+            </Typography>
+            <Typography variant='body2' className='text-gray-600'>
+              This is a template application with user authentication. You can now build your
+              application features here.
+            </Typography>
+          </CardContent>
+        </Card>
       </Box>
     </Layout>
   );

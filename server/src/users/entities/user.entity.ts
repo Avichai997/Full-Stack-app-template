@@ -1,6 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from 'typeorm';
-
-import { Playbook } from '@/playbooks/entities';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -15,7 +13,4 @@ export class User {
 
   @CreateDateColumn()
   createdAt: Date;
-
-  @OneToMany(() => Playbook, (playbook) => playbook.user)
-  playbooks: Playbook[];
 }

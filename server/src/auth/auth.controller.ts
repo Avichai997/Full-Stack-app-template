@@ -19,6 +19,7 @@ interface ICsrfRequest extends Request {
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from '@/common';
+import { config } from '@/config';
 import { LoginDto, RegisterDto } from './dto';
 
 @ApiTags('Authentication')
@@ -38,7 +39,7 @@ export class AuthController {
 
     response.cookie('access_token', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: config.server.nodeEnv === 'production',
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });

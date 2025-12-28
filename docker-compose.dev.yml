@@ -1,11 +1,11 @@
 services:
   db:
     image: postgres:15-alpine
-    container_name: playbook_db
+    container_name: app_db
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_NAME:-playbook_db}
+      POSTGRES_DB: ${DB_NAME:-app_db}
     ports:
       - '${DB_PORT:-5432}:5432'
     volumes:
@@ -20,7 +20,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.dev
-    container_name: playbook_server
+    container_name: app_server
     ports:
       - '${SERVER_PORT:-3001}:3001'
     environment:
@@ -29,7 +29,7 @@ services:
       DB_PORT: 5432
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      DB_NAME: ${DB_NAME:-playbook_db}
+      DB_NAME: ${DB_NAME:-app_db}
       JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       CLIENT_URL: ${CLIENT_URL:-http://localhost:5173}

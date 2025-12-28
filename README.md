@@ -1,28 +1,55 @@
-# Security Playbook Builder
+# Full-Stack App Template
 
-A full-stack application for creating and managing security automation playbooks. Built with React 18, NestJS, and PostgreSQL.
+A full-stack application template with user authentication. Built with React 18, NestJS, and PostgreSQL.
 
 ## Quick Start
 
-### Development Mode (with hot-reload)
+### Prerequisites
 
-The easiest way to run the project is with Docker Compose:
+- Node.js 22+
+- Docker and Docker Compose
+- npm or yarn
 
-```bash
-# Clone the repository
-git clone https://github.com/Avichai997/Infinity-Playblocks
-cd "Infinity-Playblocks"
+### Installation Steps
 
-# Production mode
-docker-compose up --build
+1. **Install dependencies:**
 
-# Development mode (with hot-reload)
-npm install
-npm run docker:build:dev
-# in separate terminal:
-cd client
-npm run dev
-```
+   ```bash
+   npm run install
+   ```
+
+2. **Configure environment variables (optional):**
+
+   You can set environment variables or edit the config files directly:
+
+   - Server config: `server/src/config/config.ts`
+   - Client config: `client/src/config/config.ts`
+
+   Or set environment variables before running:
+
+   ```bash
+   # Example: Set environment variables
+   export DB_PASSWORD=yourpassword
+   export JWT_SECRET=your-secret-key
+   ```
+
+3. **Start database and server (Terminal 1):**
+
+   ```bash
+   npm run docker:up:dev
+   ```
+
+4. **Run database migrations (wait for server to start, then in a new terminal):**
+
+   ```bash
+   cd server
+   npm run migration:run
+   ```
+
+5. **Start client (Terminal 2):**
+   ```bash
+   npm run client:dev
+   ```
 
 That's it! The application will be available at:
 
@@ -31,13 +58,14 @@ That's it! The application will be available at:
 - **API Documentation (Swagger)**: http://localhost:3001/api/docs
 - **Database**: localhost:5432
 
+> 📖 For detailed setup instructions, troubleshooting, and production deployment, see [SETUP.md](./SETUP.md)
+
 ## Features
 
 - User authentication with JWT and HTTP-only cookies
-- Create, view, and delete security playbooks
-- Simulate events to see which playbooks match
 - Secure API with CSRF protection, CORS, and XSS prevention
 - Dockerized setup for easy deployment
+- TypeScript throughout for type safety
 
 ## Tech Stack
 
@@ -45,8 +73,9 @@ That's it! The application will be available at:
 
 - React 18 with TypeScript
 - Vite
-- React Query v4
+- React Query v5
 - Zustand
+- Material-UI
 - Tailwind CSS
 
 **Backend:**
@@ -68,6 +97,63 @@ That's it! The application will be available at:
 - Node.js 22 (use `.nvmrc` if you have nvm: `nvm use`)
 - Docker and Docker Compose
 - npm or yarn
+
+## Configuration
+
+Configuration is managed through config files with environment variable support:
+
+### Server Configuration
+
+Edit `server/src/config/config.ts` or set environment variables:
+
+```typescript
+// Default values in config.ts
+export const config = {
+  server: {
+    port: 3001,
+    nodeEnv: 'development',
+  },
+  database: {
+    host: 'localhost',
+    port: 5432,
+    username: 'postgres',
+    password: 'postgres',
+    name: 'app_db',
+  },
+  jwt: {
+    secret: 'dev-secret-key-change-in-production',
+    expiresIn: 604800, // 7 days
+  },
+  cors: {
+    clientUrl: 'http://localhost:5173',
+  },
+};
+```
+
+**Environment variables override defaults:**
+
+- `SERVER_PORT` - Server port (default: 3001)
+- `NODE_ENV` - Environment (development/production)
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` - Database config
+- `JWT_SECRET`, `JWT_EXPIRES_IN` - JWT configuration
+- `CLIENT_URL` - CORS allowed origin
+
+### Client Configuration
+
+Edit `client/src/config/config.ts` or set environment variables:
+
+```typescript
+// Default values in config.ts
+export const config = {
+  api: {
+    baseURL: 'http://localhost:3001/api',
+  },
+};
+```
+
+**Environment variables override defaults:**
+
+- `VITE_API_URL` - API base URL (default: http://localhost:3001/api)
 
 ## Development Mode (Recommended for Fast HMR)
 
@@ -95,6 +181,7 @@ cd client && npm run dev
 ```
 
 **Why this approach?**
+
 - ⚡ **Super fast HMR**: Vite runs natively without Docker overhead
 - 🔄 **Live reload**: Changes reflect instantly (< 50ms)
 - 🐛 **Better debugging**: Native Chrome DevTools integration
@@ -117,6 +204,7 @@ docker-compose up db
 ```bash
 cd server
 npm install
+# Optionally edit server/src/config/config.ts or set environment variables
 npm run start:dev
 ```
 
@@ -127,33 +215,11 @@ The server will run on http://localhost:3001
 ```bash
 cd client
 npm install
+# Optionally edit client/src/config/config.ts or set VITE_API_URL
 npm run dev
 ```
 
 The client will run on http://localhost:5173
-
-## Environment Variables
-
-Create a `.env` file in the root directory (or copy from `.env.example`):
-
-```env
-# Database
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=playbook_db
-DB_PORT=5432
-
-# Server
-SERVER_PORT=3001
-NODE_ENV=development
-JWT_SECRET=your-secret-key-change-in-production
-JWT_EXPIRES_IN=7d
-
-# Client
-CLIENT_URL=http://localhost:5173
-CLIENT_PORT=5173
-VITE_API_URL=http://localhost:3001
-```
 
 ## API Endpoints
 
@@ -164,14 +230,6 @@ VITE_API_URL=http://localhost:3001
 - `POST /api/auth/logout` - Logout
 - `GET /api/auth/me` - Get current user
 - `GET /api/auth/csrf-token` - Get CSRF token
-
-### Playbooks
-
-- `GET /api/playbooks` - Get all user's playbooks
-- `POST /api/playbooks` - Create a new playbook
-- `PATCH /api/playbooks/:id` - Update a playbook
-- `DELETE /api/playbooks/:id` - Delete a playbook
-- `GET /api/playbooks/simulate?trigger=TRIGGER_TYPE` - Simulate event
 
 ## API Documentation (OpenAPI/Swagger)
 
@@ -194,7 +252,7 @@ Once the server is running, visit:
 
 ### Using the Documentation
 
-1. **View Endpoints**: Browse all available API endpoints organized by tags (Authentication, Playbooks, Health)
+1. **View Endpoints**: Browse all available API endpoints organized by tags
 2. **Test Endpoints**: Click "Try it out" on any endpoint to test it directly
 3. **Authenticate**: Use the "Authorize" button at the top to set your JWT token or cookie
 4. **View Schemas**: Check the "Schemas" section to see all data models and DTOs
